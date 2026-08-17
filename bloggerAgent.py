@@ -12,7 +12,8 @@ import re
 from pathlib import Path
 
 
-llm=ChatOpenAI(base_url="http://127.0.0.1:8080",model='gemma4',api_key='not-required')
+# llm=ChatOpenAI(base_url="http://127.0.0.1:8080",model='gemma4',api_key='not-required') llama cpp
+llm=ChatOpenAI(base_url="http://localhost:11434/v1",model='gemma4',api_key='not-required')
 
 
 #tavily search fn
@@ -376,6 +377,6 @@ def run(topic: str):
     return out
 
 
-out=run('write a blog on state of multimodal llms in 2026')
+out=run('Blog Explaining the step-by-step mathematical derivation of the Backpropagation algorithm used in neural networks. Show all partial derivatives using LaTeX, explain the chain rule application at each layer, and describe how gradient descent uses these values to update weights and biases.')
 
 print(out['final'])

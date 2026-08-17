@@ -1,0 +1,49 @@
+{"data":[{
+  "type": "STEP_START",
+  "status": "ANALYZING_TOPIC",
+  "message": "Analyzing your topic and generating the main structure...",
+  "animation_state": "RUNNING",
+  "current_step_title": "Analyzing and Outlining",
+  "data": {
+    "topic": "The Future of Remote Work: Productivity vs. Isolation",
+    "estimated_time": "2 seconds"
+  }
+},
+{
+  "type": "STEP_COMPLETE",
+  "status": "OUTLINE_GENERATED",
+  "message": "Outline generation complete. Ready to generate content.",
+  "animation_state": "TRANSITION_TO_LIST",
+  "current_step_title": "Generated Outline",
+  "data": {
+    "headings": [
+      {"id": "H1", "text": "Introduction: The Great Shift to Remote Work"},
+      {"id": "H2", "text": "Productivity Gains: The Freedom of Home Office"},
+      {"id": "H3", "text": "The Isolation Factor: Mental Health Challenges"},
+      {"id": "H4", "text": "Tools and Strategies for Balanced Remote Life"}
+    ]
+  }
+},
+{
+  "type": "STEP_START",
+  "status": "STITCHING_CONTENT",
+  "message": "Stitching all generated content together into the final blog draft...",
+  "animation_state": "STITCHING",
+  "current_step_title": "Final Content Stitching",
+  "data": {
+    "content_status": "combining_H1_H2_H3_H4",
+    "estimated_time": "5 seconds"
+  }
+},
+{
+  "type": "FINAL_SUCCESS",
+  "status": "COMPLETED",
+  "message": "Blog draft is ready!",
+  "animation_state": "SUCCESS",
+  "current_step_title": "Draft Finalized",
+  "data": {
+    "draft_url": "/drafts/remote_work_final_v1",
+    "summary": "A comprehensive blog post covering the shift to remote work."
+  }
+}
+]}
