@@ -1,6 +1,11 @@
 langchain
 langchain-core
 langchain-openai
+langchain-community
+tavily-python
 python-dotenv
 fastapi
 uvicorn
+python-multipart
+pypdf
+python-docx
