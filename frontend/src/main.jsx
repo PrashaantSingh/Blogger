@@ -1,10 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import Blogger from '../Blogger.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
 
-createRoot(document.getElementById('root')).render(
+import App from "./App.jsx";
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Blogger />
+    <App />
   </StrictMode>,
-)
+);

@@ -1,97 +1,102 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function StatusPage({ logs, topic }) {
-  const getTaskLabel = (name) => {
-    switch (name) {
-      case "generate_outline":
-        return "Generating Outline";
-      case "writer":
-        return "Writing Section";
-      case "merge_sections":
-        return "Merging Sections";
-      default:
-        return name;
-    }
-  };
+const statusStyles = {
+  waiting: "bg-zinc-100 text-zinc-500",
+  writing: "bg-amber-50 text-amber-700",
+  ready: "bg-green-50 text-green-700",
+};
 
+export default function StatusPage({ logs = [], sections = [], topic = "" }) {
   const cardRef = useRef(null);
   const [height, setHeight] = useState("auto");
+  const completed = logs.filter((log) => log.status === "ready").length;
+  const total = sections.length;
+  const progress = total ? Math.round((completed / total) * 100) : 0;
+  const current =
+    completed === total && total > 0
+      ? "Your outline is complete. Finishing the article..."
+      : `Writing ${completed} of ${total} sections`;
 
   useEffect(() => {
-    if (!cardRef.current) return;
-
-    // Use ResizeObserver for smooth and accurate dynamic height tracking
+    if (!cardRef.current) return undefined;
     const observer = new ResizeObserver(([entry]) => {
-      if (entry) {
-        setHeight(entry.target.scrollHeight);
-      }
+      if (entry) setHeight(entry.target.scrollHeight);
     });
-
     observer.observe(cardRef.current);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="w-full max-w-2xl flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex justify-between items-baseline border-b border-zinc-200 pb-2">
-        <span className="text-md  font-mono uppercase tracking-wider animate-pulse text-green-800">
-          Workflow Execution
-        </span>
-        <span className="text-xs text-zinc-500 truncate max-w-[320px] font-medium">
-          {topic}
-        </span>
-      </div>
+    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center gap-5 px-4 py-8 sm:px-6 border-zinc-200">
+      <header className="border-b border-zinc-200 pb-4">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-sm font-semibold tracking-wide text-green-800">
+            Writing your blog
+          </span>
+          {total > 0 && (
+            <span className="text-sm font-medium text-zinc-500">
+              {progress}%
+            </span>
+          )}
+        </div>
+        <p className="mt-2 truncate text-sm text-zinc-500">{topic}</p>
+        {total > 0 && (
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-zinc-100">
+            <div
+              className="h-full rounded-full bg-green-700 transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
+        <p className="mt-2 text-sm text-zinc-600">
+          {total ? current : "Creating your outline..."}
+        </p>
+      </header>
 
-      {/* Animated height container */}
       <div
         className="transition-[height] duration-300 ease-in-out"
         style={{ height: typeof height === "number" ? `${height}px` : height }}
       >
-        {/* Actual card measured directly */}
         <div
           ref={cardRef}
-          className="border-dashed border-2 border-zinc-200 rounded-2xl p-5 bg-white shadow-sm"
+          className="rounded-2xl border-2 border-zinc-200 bg-white p-5 shadow-sm"
         >
-          <div className="divide-y divide-zinc-100 flex flex-col">
-            {logs.map((log) => (
-              <div
-                key={log.id}
-                className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
-              >
-                <div className="min-w-0 flex items-center gap-3 flex-1">
-                  <span className="text-xs font-mono uppercase px-2.5 py-1 rounded bg-zinc-100 text-zinc-600 shrink-0 font-medium">
-                    {getTaskLabel(log.name)}
-                  </span>
-
-                  <span className="text-sm text-zinc-800 truncate">
-                    {log.section ||
-                      (log.name === "generate_outline"
-                        ? "Generating outline structure"
-                        : "Merging draft sections")}
-                  </span>
-                </div>
-
-                <div className="shrink-0 text-xs font-mono">
-                  {log.completed ? (
-                    <span className="text-zinc-900 font-semibold">
-                      completed
+          {total > 0 ? (
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {sections.map((section) => {
+                const log = logs.find((item) => item.sectionId === section.id);
+                const status = log?.status || "waiting";
+                return (
+                  <li
+                    key={section.id}
+                    className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-zinc-100 border p-3"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900 text-xs font-semibold text-white">
+                      {section.id}
                     </span>
-                  ) : (
-                    <span className="text-zinc-400 animate-pulse">running</span>
-                  )}
-                </div>
-              </div>
-            ))}
-
-            {logs.length === 0 && (
-              <div className="py-6 text-center text-xs text-zinc-400 font-mono">
-                Initializing agent graph...
-              </div>
-            )}
-          </div>
+                    <span className="min-w-0 truncate text-sm font-medium text-zinc-800">
+                      {section.title}
+                    </span>
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyles[status]}`}
+                    >
+                      {status === "ready"
+                        ? "Completed"
+                        : status === "writing"
+                          ? "Writing"
+                          : "Waiting"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <p className="py-6 text-center text-sm text-zinc-500">
+              Preparing your outline...
+            </p>
+          )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
