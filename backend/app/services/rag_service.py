@@ -1,11 +1,15 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from app.services.vector_store import vector_store
 
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
 
-def ingest_documents(text: str, batch_id: str):
+
+def ingest_documents(text: str, batch_id: str) -> int:
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
     )
 
     chunks = splitter.create_documents(
@@ -27,3 +31,7 @@ def retrieve_context(topic: str, batch_id: str) -> str:
     )
 
     return "\n\n".join(doc.page_content for doc in results)
+
+
+def delete_document_batch(batch_id: str) -> None:
+    vector_store.delete(where={"batch_id": batch_id})

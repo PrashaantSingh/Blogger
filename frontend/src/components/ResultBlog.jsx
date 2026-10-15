@@ -1,46 +1,17 @@
-// import ReactMarkdown from "react-markdown";
-// export default function ResultsPage({blog_title, blogContent, onReset }) {
-//     console.log(blogContent)
-//     console.log(blog_title)
-//   return (
-//     <div className="w-[80%] overflow-y-auto mx-auto gap-6 p-4 ">
-//       <div className="flex justify-between items-center border-b border-zinc-200 pb-4">
-//         <h1 className="text-3xl font-mono uppercase">
-//           {blog_title}
-//         </h1>
-//         <button
-//           onClick={onReset}
-//           className="px-4 py-3 border border-zinc-300 rounded-full text-xs font-medium text-zinc-800 hover:bg-zinc-100 transition cursor-pointer"
-//         >
-//           Write another
-//         </button>
-//       </div>
 
-//       <article className="">
-//         <ReactMarkdown
-//           components={{
-//             h1: ({ children }) => (
-//               <h1 className="text-2xl font-bold mb-6">{children}</h1>
-//             ),
-//             h2: ({ children }) => (
-//               <h2 className="text-xl font-semibold mt-8 mb-4">{children}</h2>
-//             ),
-//             p: ({ children }) => (
-//               <p className="text-lg leading-8 mb-4">{children}</p>
-//             ),
-//           }}
-//         >
-//           {blogContent}
-//         </ReactMarkdown>
-//       </article>
-//     </div>
-//   );
-// }
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
-export default function ResultsPage({ blog_title, blogContent, onReset }) {
-  // 1. Automatically scroll back to top whenever new results load
+function removeDuplicateTitle(content, title) {
+  const match = content.match(/^\s*#\s+(.+?)(?:\r?\n|$)/);
+  if (!match || match[1].trim().toLocaleLowerCase() !== title.trim().toLocaleLowerCase()) {
+    return content;
+  }
+
+  return content.slice(match[0].length).trimStart();
+}
+
+export default function ResultsPage({ blogTitle, blogContent, onReset }) {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [blogContent]);
@@ -48,10 +19,9 @@ export default function ResultsPage({ blog_title, blogContent, onReset }) {
   return (
     <main className="min-h-screen w-full bg-white text-zinc-900 pt-8 pb-16 px-4 sm:px-6 md:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-6 mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 leading-tight">
-            {blog_title}
+            {blogTitle}
           </h1>
           <button
             onClick={onReset}
@@ -61,7 +31,6 @@ export default function ResultsPage({ blog_title, blogContent, onReset }) {
           </button>
         </header>
 
-        {/* Blog Article Content */}
         <article className="text-zinc-800">
           <ReactMarkdown
             components={{
@@ -115,7 +84,7 @@ export default function ResultsPage({ blog_title, blogContent, onReset }) {
                 ),
             }}
           >
-            {blogContent}
+            {removeDuplicateTitle(blogContent, blogTitle)}
           </ReactMarkdown>
         </article>
       </div>

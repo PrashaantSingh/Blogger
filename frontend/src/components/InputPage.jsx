@@ -1,9 +1,10 @@
-import { useState } from "react";
-
-export default function InputPage({ onSubmit }) {
-  const [topic, setTopic] = useState("");
-  const [files, setFiles] = useState(null);
-
+export default function InputPage({
+  topic,
+  files,
+  onTopicChange,
+  onFilesChange,
+  onSubmit,
+}) {
   function handleClick() {
     if (!topic.trim()) return;
     onSubmit(topic, files);
@@ -18,7 +19,7 @@ export default function InputPage({ onSubmit }) {
           type="text"
           placeholder="Enter the topic for the Blog"
           value={topic}
-          onChange={(e) => setTopic(e.target.value)}
+          onChange={(e) => onTopicChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleClick()}
         />
         <button
@@ -45,8 +46,7 @@ export default function InputPage({ onSubmit }) {
           multiple
           accept=".txt,.md,.csv,.pdf,.docx"
           onChange={(event) => {
-            console.log(Array.from(event.target.files));
-            setFiles(Array.from(event.target.files) || null);
+            onFilesChange(Array.from(event.target.files) || null);
           }}
         />
         {files &&

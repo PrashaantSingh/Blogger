@@ -1,8 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.graph.state import Task
 
 
-class GenerateResponse(BaseModel):
-    finished: bool = False
-    blog: str | None = None
-    blog_title: str | None = None
-    error: str | None = None
+class OutlineResponse(BaseModel):
+    approval_id: str
+    topic: str
+    blog_title: str
+    sections: list[Task]
+
+
+class OutlineRevisionRequest(BaseModel):
+    instructions: str = Field(default="", max_length=2000)
